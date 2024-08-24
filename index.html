@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Price Calculator</title>
+    <title>Combined Tool Panel</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -29,15 +29,15 @@
         button:hover {
             background-color: #0056b3;
         }
-        .output {
+        .output, #result {
             margin-top: 20px;
         }
-        .output p {
+        .output p, #result p {
             background: #f9f9f9;
             padding: 10px;
             border: 1px solid #ddd;
             border-radius: 5px;
-            color: #000000; /* Ensuring readability on light background */
+            color: #000000;
         }
         .cost-price {
             color: red;
@@ -47,7 +47,7 @@
         }
         .container {
             max-width: 300px;
-            margin: 20px auto; /* Added top margin for spacing */
+            margin: 20px auto;
             padding: 20px;
             border: 1px solid #ccc;
             border-radius: 5px;
@@ -60,99 +60,176 @@
             max-width: 150px;
             margin-bottom: 20px;
         }
+        h1 {
+            color: #ffffff;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+        }
+        .checkbox-container label {
+            margin-left: 10px;
+        }
     </style>
 </head>
 <body>
     <img src="https://www.growbrandindia.in/web/image/website/1/logo/growbrandindia.in?unique=58ac854" alt="Brand Logo" class="logo">
 
-    <h1>Price Calculator</h1>
+    <h1>Combined Tool Panel</h1>
 
-    <label for="modeSelect">Select Mode:</label>
-    <select id="modeSelect" onchange="toggleMode()">
-        <option value="priceCalculator">Price Calculator</option>
+    <label for="toolSelect">Select Tool:</label>
+    <select id="toolSelect" onchange="toggleTool()">
+        <option value="cacPanelFinder">CAC Panel Finder</option>
+        <option value="scpDiscountFinder">SCP Discount Finder</option>
         <option value="discountCalculator">Discount Percentage Calculator</option>
     </select>
 
-    <div id="priceCalculator" class="mode">
-        <label for="dropshipPrice">Dropship Price:</label>
-        <input type="number" id="dropshipPrice" placeholder="Enter Dropship Price" step="0.01">
-        <label for="dropshipDiscount">Dropship Discount:</label>
-        <input type="number" id="dropshipDiscount" placeholder="Enter Dropship Discount %" step="0.01">
-        <button onclick="calculate()">Calculate</button>
+    <!-- CAC Panel Finder -->
+    <div id="cacPanelFinder" class="tool">
+        <h2>CAC Panel Finder</h2>
+
+        <label for="cacDropshipPrice">Dropship Price:</label>
+        <input type="number" id="cacDropshipPrice" placeholder="Enter Dropship Price" step="0.01">
+        <label for="cacDropshipDiscount">Dropship Discount:</label>
+        <input type="number" id="cacDropshipDiscount" placeholder="Enter Dropship Discount %" step="0.01">
+        <button onclick="calculateCAC()">Calculate</button>
+
         <div class="output">
-            <p id="costPrice" class="cost-price"></p>
-            <p id="finalPanelDiscount" class="final-panel-discount"></p>
-            <p id="panelPrice"></p>
-            <p id="panelDiscountNo"></p>
-            <p id="estimatedNumber"></p>
-            <p id="finalWebsitePrice"></p>
+            <p id="cacCostPrice" class="cost-price"></p>
+            <p id="cacFinalPanelDiscount" class="final-panel-discount"></p>
+            <p id="cacPanelPrice"></p>
+            <p id="cacPanelDiscountNo"></p>
+            <p id="cacEstimatedNumber"></p>
+            <p id="cacFinalWebsitePrice"></p>
         </div>
     </div>
 
-    <div id="discountCalculator" class="mode hidden">
-        <div class="container">
-            <h2>Discount Percentage Calculator</h2>
-            <label for="originalPrice">Your Price:</label>
-            <input type="number" id="originalPrice" placeholder="Enter your price">
-            <label for="discountedPrice">Dropship Price:</label>
-            <input type="number" id="discountedPrice" placeholder="Enter dropship price">
-            <button onclick="calculateDiscount()">Calculate Discount</button>
-            <div class="result" id="result"></div>
+    <!-- SCP Discount Finder -->
+    <div id="scpDiscountFinder" class="tool hidden">
+        <h2>SCP Discount Finder</h2>
+
+        <label for="initialSaleAmount">Initial Sale Amount:</label>
+        <input type="number" id="initialSaleAmount" placeholder="Enter initial sale amount">
+
+        <label for="websiteDiscount">Website Discount (%):</label>
+        <input type="number" id="websiteDiscount" value="15">
+
+        <label for="goldCardDiscount">Gold Card Discount (%):</label>
+        <input type="number" id="goldCardDiscount" value="7">
+
+        <div class="checkbox-container">
+            <input type="checkbox" id="goldCardToggle" checked>
+            <label for="goldCardToggle">Apply Gold Card Discount</label>
+        </div>
+
+        <label for="prepaidDiscount">Prepaid Discount (%):</label>
+        <input type="number" id="prepaidDiscount" value="5">
+
+        <button onclick="calculateSCP()">Calculate</button>
+
+        <div id="result">
+            <p id="finalAmount"></p>
+            <p id="totalDiscount"></p>
+            <p id="totalSaving"></p>
+        </div>
+    </div>
+
+    <!-- Discount Percentage Calculator -->
+    <div id="discountCalculator" class="tool hidden">
+        <h2>Discount Percentage Calculator</h2>
+
+        <label for="originalPrice">Your Price:</label>
+        <input type="number" id="originalPrice" placeholder="Enter your price">
+
+        <label for="discountedPrice">Dropship Price:</label>
+        <input type="number" id="discountedPrice" placeholder="Enter dropship price">
+
+        <button onclick="calculateDiscount()">Calculate Discount</button>
+
+        <div class="result" id="result">
+            <p id="discountResult"></p>
         </div>
     </div>
 
     <script>
-        function toggleMode() {
-            var selectedMode = document.getElementById('modeSelect').value;
-            document.getElementById('priceCalculator').classList.toggle('hidden', selectedMode !== 'priceCalculator');
-            document.getElementById('discountCalculator').classList.toggle('hidden', selectedMode !== 'discountCalculator');
+        function toggleTool() {
+            var selectedTool = document.getElementById('toolSelect').value;
+            document.getElementById('cacPanelFinder').classList.toggle('hidden', selectedTool !== 'cacPanelFinder');
+            document.getElementById('scpDiscountFinder').classList.toggle('hidden', selectedTool !== 'scpDiscountFinder');
+            document.getElementById('discountCalculator').classList.toggle('hidden', selectedTool !== 'discountCalculator');
         }
 
-        function calculate() {
-            let dropshipPrice = parseFloat(document.getElementById('dropshipPrice').value);
-            let dropshipDiscount = parseFloat(document.getElementById('dropshipDiscount').value);
+        function calculateCAC() {
+            let dropshipPrice = parseFloat(document.getElementById('cacDropshipPrice').value);
+            let dropshipDiscount = parseFloat(document.getElementById('cacDropshipDiscount').value);
 
             if (isNaN(dropshipPrice) || isNaN(dropshipDiscount)) {
                 alert("Please enter valid numbers for Dropship Price and Dropship Discount %");
                 return;
             }
 
-            // 1. Cost Price
             let costPrice = dropshipPrice * (1 - dropshipDiscount / 100);
-            document.getElementById('costPrice').innerText = `Cost Price: ${costPrice.toFixed(2)}`;
+            document.getElementById('cacCostPrice').innerText = `Cost Price: ${costPrice.toFixed(2)}`;
 
-            // 2. Panel Price (previously Demo Website Price)
             let panelPrice = costPrice * 2.25;
-            document.getElementById('panelPrice').innerText = `Panel Price: ${panelPrice.toFixed(2)}`;
+            document.getElementById('cacPanelPrice').innerText = `Panel Price: ${panelPrice.toFixed(2)}`;
 
-            // 3. Panel Discount No. (previously Demo Discount)
             let panelDiscountNo = panelPrice - dropshipPrice;
-            document.getElementById('panelDiscountNo').innerText = `Panel Discount No.: ${panelDiscountNo.toFixed(2)}`;
+            document.getElementById('cacPanelDiscountNo').innerText = `Panel Discount No.: ${panelDiscountNo.toFixed(2)}`;
 
-            // 4. Estimated Number (previously Angel 2 Discount)
             let estimatedNumber = panelPrice - panelDiscountNo;
-            document.getElementById('estimatedNumber').innerText = `Estimated Number: ${estimatedNumber.toFixed(2)}`;
+            document.getElementById('cacEstimatedNumber').innerText = `Estimated Number: ${estimatedNumber.toFixed(2)}`;
 
-            // 5. Final Panel Discount % (previously Panel Discount)
-            let finalPanelDiscount = Math.abs(((estimatedNumber / panelPrice) * 100) - 100); // Use Math.abs() to ensure positive value
-            document.getElementById('finalPanelDiscount').innerText = `Final Panel Discount %: ${finalPanelDiscount.toFixed(2)}%`;
+            let finalPanelDiscount = Math.abs(((estimatedNumber / panelPrice) * 100) - 100);
+            document.getElementById('cacFinalPanelDiscount').innerText = `Final Panel Discount %: ${finalPanelDiscount.toFixed(2)}%`;
 
-            // 6. Final Website Price
             let finalWebsitePrice = estimatedNumber;
-            document.getElementById('finalWebsitePrice').innerText = `Final Website Price: ${finalWebsitePrice.toFixed(2)}`;
+            document.getElementById('cacFinalWebsitePrice').innerText = `Final Website Price: ${finalWebsitePrice.toFixed(2)}`;
+        }
+
+        function calculateSCP() {
+            let initialSaleAmount = parseFloat(document.getElementById('initialSaleAmount').value);
+            let websiteDiscount = parseFloat(document.getElementById('websiteDiscount').value);
+            let goldCardDiscount = parseFloat(document.getElementById('goldCardDiscount').value);
+            let prepaidDiscount = parseFloat(document.getElementById('prepaidDiscount').value);
+            let goldCardToggle = document.getElementById('goldCardToggle').checked;
+
+            if (isNaN(initialSaleAmount) || initialSaleAmount <= 0) {
+                alert("Please enter a valid initial sale amount.");
+                return;
+            }
+
+            let amountAfterWebsiteDiscount = initialSaleAmount - (initialSaleAmount * (websiteDiscount / 100));
+
+            let amountAfterGoldCardDiscount = amountAfterWebsiteDiscount;
+            if (goldCardToggle) {
+                amountAfterGoldCardDiscount -= (amountAfterWebsiteDiscount * (goldCardDiscount / 100));
+            }
+
+            let finalAmount = amountAfterGoldCardDiscount - (amountAfterGoldCardDiscount * (prepaidDiscount / 100));
+
+            let totalDiscount = initialSaleAmount - finalAmount;
+            let totalDiscountPercentage = (totalDiscount / initialSaleAmount) * 100;
+            let totalSaving = totalDiscount;
+
+            document.getElementById('finalAmount').innerHTML = `Final Amount Payable: ₹${finalAmount.toFixed(2)}`;
+            document.getElementById('totalDiscount').innerHTML = `Total Discount: ${totalDiscountPercentage.toFixed(2)}%`;
+            document.getElementById('totalSaving').innerHTML = `Total Saving: ₹${totalSaving.toFixed(2)}`;
         }
 
         function calculateDiscount() {
             var originalPrice = parseFloat(document.getElementById('originalPrice').value);
             var discountedPrice = parseFloat(document.getElementById('discountedPrice').value);
 
-            if (isNaN(originalPrice) || isNaN(discountedPrice) || originalPrice <= 0 || discountedPrice <= 0) {
-                document.getElementById('result').innerText = "Please enter valid prices.";
+            if (isNaN(originalPrice) || isNaN(discountedPrice)) {
+                alert("Please enter valid numbers for Original Price and Discounted Price.");
                 return;
             }
 
             var discountPercentage = ((originalPrice - discountedPrice) / originalPrice) * 100;
-            document.getElementById('result').innerText = "Discount Percentage: " + discountPercentage.toFixed(2) + "%";
+            document.getElementById('discountResult').innerText = `Discount Percentage: ${discountPercentage.toFixed(2)}%`;
         }
     </script>
 </body>
