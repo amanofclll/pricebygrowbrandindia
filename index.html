@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Combined Tool Panel</title>
+    <title>Tool By Growbrandindia.in</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -77,18 +77,18 @@
 <body>
     <img src="https://www.growbrandindia.in/web/image/website/1/logo/growbrandindia.in?unique=58ac854" alt="Brand Logo" class="logo">
 
-    <h1>Combined Tool Panel</h1>
+    <h1>Tool By Growbrandindia.in</h1>
 
     <label for="toolSelect">Select Tool:</label>
     <select id="toolSelect" onchange="toggleTool()">
-        <option value="cacPanelFinder">CAC Panel Finder</option>
+        <option value="cacPanelFinder">CAC Panel Cost</option>
         <option value="scpDiscountFinder">SCP Discount Finder</option>
-        <option value="discountCalculator">Discount Percentage Calculator</option>
+        <option value="discountCalculator">Discount % Calculator</option>
     </select>
 
-    <!-- CAC Panel Finder -->
+    <!-- CAC Panel Cost -->
     <div id="cacPanelFinder" class="tool">
-        <h2>CAC Panel Finder</h2>
+        <h2>CAC Panel Cost</h2>
 
         <label for="cacDropshipPrice">Dropship Price:</label>
         <input type="number" id="cacDropshipPrice" placeholder="Enter Dropship Price" step="0.01">
@@ -117,15 +117,15 @@
         <input type="number" id="websiteDiscount" value="15">
 
         <label for="goldCardDiscount">Gold Card Discount (%):</label>
-        <input type="number" id="goldCardDiscount" value="7">
+        <input type="number" id="goldCardDiscount" value="0">
 
         <div class="checkbox-container">
-            <input type="checkbox" id="goldCardToggle" checked>
+            <input type="checkbox" id="goldCardToggle" unchecked>
             <label for="goldCardToggle">Apply Gold Card Discount</label>
         </div>
 
         <label for="prepaidDiscount">Prepaid Discount (%):</label>
-        <input type="number" id="prepaidDiscount" value="5">
+        <input type="number" id="prepaidDiscount" value="0">
 
         <button onclick="calculateSCP()">Calculate</button>
 
@@ -136,9 +136,9 @@
         </div>
     </div>
 
-    <!-- Discount Percentage Calculator -->
+    <!-- Discount % Calculator -->
     <div id="discountCalculator" class="tool hidden">
-        <h2>Discount Percentage Calculator</h2>
+        <h2>Discount % Calculator</h2>
 
         <label for="originalPrice">Your Price:</label>
         <input type="number" id="originalPrice" placeholder="Enter your price">
