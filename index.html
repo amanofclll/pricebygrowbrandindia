@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tool By Growbrandindia.in</title>
+    <title>Growbrandindia Panel</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -13,7 +13,7 @@
             background-color: #1a1423;
             color: #ffffff;
         }
-        input {
+        input, select {
             width: 100%;
             padding: 10px;
             margin: 10px 0;
@@ -72,18 +72,67 @@
         .checkbox-container label {
             margin-left: 10px;
         }
+        /* Calculator specific styles */
+        .calculator {
+            background-color: #2c2c2c;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            width: 300px;
+            margin: 20px auto;
+        }
+        .calculator .display {
+            background-color: #3a3a3a;
+            border-radius: 5px;
+            color: #ffffff;
+            font-size: 2em;
+            margin-bottom: 10px;
+            padding: 10px;
+            text-align: right;
+        }
+        .calculator .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+        .calculator button {
+            background-color: #4a4a4a;
+            border: none;
+            border-radius: 5px;
+            color: #ffffff;
+            cursor: pointer;
+            font-size: 1.2em;
+            padding: 15px;
+            transition: background-color 0.2s;
+        }
+        .calculator button:hover {
+            background-color: #5a5a5a;
+        }
+        .calculator .operator {
+            background-color: #ff9500;
+        }
+        .calculator .operator:hover {
+            background-color: #ffaa33;
+        }
+        .calculator .equals {
+            background-color: #4CAF50;
+        }
+        .calculator .equals:hover {
+            background-color: #45a049;
+        }
     </style>
 </head>
 <body>
     <img src="https://www.growbrandindia.in/web/image/website/1/logo/growbrandindia.in?unique=58ac854" alt="Brand Logo" class="logo">
 
-    <h1>Tool By Growbrandindia.in</h1>
+    <h1>Growbrandindia Panel</h1>
 
-    <label for="toolSelect">Select Tool:</label>
+    <label for="toolSelect">Switch Tool:</label>
     <select id="toolSelect" onchange="toggleTool()">
         <option value="cacPanelFinder">CAC Panel Cost</option>
         <option value="scpDiscountFinder">SCP Discount Finder</option>
-        <option value="discountCalculator">Discount % Calculator</option>
+        <option value="discountCalculator">Discount Percentage Calculator</option>
+        <option value="generalCalculator">General Calculator</option>
     </select>
 
     <!-- CAC Panel Cost -->
@@ -117,15 +166,15 @@
         <input type="number" id="websiteDiscount" value="15">
 
         <label for="goldCardDiscount">Gold Card Discount (%):</label>
-        <input type="number" id="goldCardDiscount" value="0">
+        <input type="number" id="goldCardDiscount" value="7">
 
         <div class="checkbox-container">
-            <input type="checkbox" id="goldCardToggle" unchecked>
+            <input type="checkbox" id="goldCardToggle" Unchecked>
             <label for="goldCardToggle">Apply Gold Card Discount</label>
         </div>
 
         <label for="prepaidDiscount">Prepaid Discount (%):</label>
-        <input type="number" id="prepaidDiscount" value="0">
+        <input type="number" id="prepaidDiscount" value="5">
 
         <button onclick="calculateSCP()">Calculate</button>
 
@@ -136,9 +185,9 @@
         </div>
     </div>
 
-    <!-- Discount % Calculator -->
+    <!-- Discount Percentage Calculator -->
     <div id="discountCalculator" class="tool hidden">
-        <h2>Discount % Calculator</h2>
+        <h2>Discount Percentage Calculator</h2>
 
         <label for="originalPrice">Your Price:</label>
         <input type="number" id="originalPrice" placeholder="Enter your price">
@@ -153,12 +202,43 @@
         </div>
     </div>
 
+    <!-- General Calculator -->
+    <div id="generalCalculator" class="tool hidden">
+        <h2>General Calculator</h2>
+        <div class="calculator">
+            <div class="display" id="display">0</div>
+            <div class="buttons">
+                <button onclick="clearDisplay()">C</button>
+                <button onclick="appendToDisplay('(')">(</button>
+                <button onclick="appendToDisplay(')')">)</button>
+                <button class="operator" onclick="appendToDisplay('/')">/</button>
+                <button onclick="appendToDisplay('7')">7</button>
+                <button onclick="appendToDisplay('8')">8</button>
+                <button onclick="appendToDisplay('9')">9</button>
+                <button class="operator" onclick="appendToDisplay('*')">*</button>
+                <button onclick="appendToDisplay('4')">4</button>
+                <button onclick="appendToDisplay('5')">5</button>
+                <button onclick="appendToDisplay('6')">6</button>
+                <button class="operator" onclick="appendToDisplay('-')">-</button>
+                <button onclick="appendToDisplay('1')">1</button>
+                <button onclick="appendToDisplay('2')">2</button>
+                <button onclick="appendToDisplay('3')">3</button>
+                <button class="operator" onclick="appendToDisplay('+')">+</button>
+                <button onclick="appendToDisplay('0')">0</button>
+                <button onclick="appendToDisplay('.')">.</button>
+                <button onclick="backspace()">←</button>
+                <button class="equals" onclick="calculate()">=</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         function toggleTool() {
             var selectedTool = document.getElementById('toolSelect').value;
             document.getElementById('cacPanelFinder').classList.toggle('hidden', selectedTool !== 'cacPanelFinder');
             document.getElementById('scpDiscountFinder').classList.toggle('hidden', selectedTool !== 'scpDiscountFinder');
             document.getElementById('discountCalculator').classList.toggle('hidden', selectedTool !== 'discountCalculator');
+            document.getElementById('generalCalculator').classList.toggle('hidden', selectedTool !== 'generalCalculator');
         }
 
         function calculateCAC() {
@@ -230,6 +310,48 @@
 
             var discountPercentage = ((originalPrice - discountedPrice) / originalPrice) * 100;
             document.getElementById('discountResult').innerText = `Discount Percentage: ${discountPercentage.toFixed(2)}%`;
+        }
+
+        // General Calculator functions
+        let display = document.getElementById('display');
+        let currentValue = '0';
+
+        function updateDisplay() {
+            display.textContent = currentValue;
+        }
+
+        function appendToDisplay(value) {
+            if (currentValue === '0' && value !== '.') {
+                currentValue = value;
+            } else {
+                currentValue += value;
+            }
+            updateDisplay();
+        }
+
+        function clearDisplay() {
+            currentValue = '0';
+            updateDisplay();
+        }
+
+        function backspace() {
+            if (currentValue.length > 1) {
+                currentValue = currentValue.slice(0, -1);
+            } else {
+                currentValue = '0';
+            }
+            updateDisplay();
+        }
+
+        function calculate() {
+            try {
+                currentValue = eval(currentValue).toString();
+                updateDisplay();
+            } catch (error) {
+                currentValue = 'Error';
+                updateDisplay();
+                setTimeout(clearDisplay, 1000);
+            }
         }
     </script>
 </body>
